@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIT Portal</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+            color: #333;
+        }
+
+        /* Navigation bar styling */
+        .navbar {
+            background-color: #6a11cb;
+            color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* Main container */
+        .container {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px 30px;
+            text-align: center;
+        }
+
+        /* Heading */
+        .container h1 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #6a11cb;
+        }
+
+        /* Label and input styles */
+        .container label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .container input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        /* Button styles */
+        .container button {
+            width: 48%;
+            padding: 10px;
+            font-size: 14px;
+            background: #6a11cb;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 1%;
+        }
+
+        .container button:hover {
+            background: #2575fc;
+        }
+
+        /* Result div */
+        .result {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Color-coded statuses */
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+    <script>
+        async function checkExamPerm() {
+            const studentId = document.getElementById("student_id").value;
+            const endpoint = '/check_exam_permission';
+            const resultDiv = document.getElementById("result");
+            try {
+                const response = await fetch(`http://localhost:8080${endpoint}?id=${studentId}`);
+                const data = await response.json();
+                resultDiv.textContent = `Exam Permission: ${data.status}`;
+                resultDiv.className = data.status === "Permitted" ? "result success" : "result error";
+            } catch (error) {
+                resultDiv.textContent = 'Error fetching exam permission data. Please try again later.';
+                resultDiv.className = "result error";
+                console.error(error);
+            }
+        }
+
+        async function checkScholarship() {
+            const studentId = document.getElementById("student_id").value;
+            const endpoint = '/check_scholarship';
+            const resultDiv = document.getElementById("result");
+            try {
+                const response = await fetch(`http://localhost:8080${endpoint}?id=${studentId}`);
+                const data = await response.json();
+                resultDiv.textContent = `Scholarship Eligibility: ${data.status}`;
+                resultDiv.className = data.status === "Eligible" ? "result success" : "result error";
+            } catch (error) {
+                resultDiv.textContent = 'Error fetching scholarship data. Please try again later.';
+                resultDiv.className = "result error";
+                console.error(error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <h1>VIT Portal</h1>
+    </div>
+
+    <!-- Main container -->
+    <div class="container">
+        <h1>Student Eligibility Checker</h1>
+        <label for="student_id">Enter Student ID:</label>
+        <input type="number" id="student_id" placeholder="Enter your Student ID" min="101" max="130">
+        <div>
+            <button onclick="checkScholarship()">Check Scholarship</button>
+            <br><br>
+            <button onclick="checkExamPerm()">Check Exam Permission</button>
+        </div>
+        <div class="result" id="result"></div>
+    </div>
+</body>
+</html>
